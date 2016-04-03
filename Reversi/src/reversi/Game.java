@@ -32,20 +32,29 @@ public class Game extends Application {
     
     private static Player player1;
     private static Player player2;
+    private static Player currentPlayer;
+
+    public static void swapCurrentPlayer() {
+        if(currentPlayer.equals(player1))
+            currentPlayer = player2;
+        else
+            currentPlayer = player1;
+    }
     
     @Override
     public void start(Stage primaryStage) {
         player1 = new Player("La bite", 1, true);
         player2 = new Player("La shnek", 2, true);
+        currentPlayer = player1;
         primaryStage.setTitle("Reversi");
         primaryStage.setHeight(8*(PAWN_SIZE*3/2)*2);
         primaryStage.setWidth(8*(PAWN_SIZE*3/2)*2);
         primaryStage.setResizable(false);
         
-        Board board = new Board(X_SIZE,Y_SIZE);
+        Board.initBoard(X_SIZE,Y_SIZE);
                 
         StackPane root = new StackPane();
-        root.getChildren().add(board.getGrid());
+        root.getChildren().add(Board.getGrid());
         
         Scene scene = new Scene(root, 300, 250);
         scene.setFill(Color.GREEN);
@@ -53,16 +62,6 @@ public class Game extends Application {
         
         primaryStage.show();
         
-        // BULLSHIT
-        /*Button btn = new Button();
-        btn.setText("Say 'Hello World'");
-        btn.setOnAction(new EventHandler<ActionEvent>() {
-            
-            @Override
-            public void handle(ActionEvent event) {
-                System.out.println("Hello World!");
-            }
-        });*/
     }
 
     public static Player getPlayer1() {
@@ -76,6 +75,15 @@ public class Game extends Application {
     public static int getPAWN_SIZE() {
         return PAWN_SIZE;
     }
+
+    public static Player getCurrentPlayer() {
+        return currentPlayer;
+    }
+
+    public static void setCurrentPlayer(Player currentPlayer) {
+        Game.currentPlayer = currentPlayer;
+    }
+    
     
     /**
      * @param args the command line arguments
