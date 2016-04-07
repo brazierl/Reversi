@@ -44,12 +44,14 @@ public class Game extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        player1 = new Player("La bite", 1, true);
-        player2 = new Player("La shnek", 2, true);
+        player1 = new Player("Thibault", 1, true);
+        player2 = new Player("Louis", 2, true);
         currentPlayer = player1;
+        int padding = 20;
+        double scoreHeightFactor = 1.2;
         primaryStage.setTitle("Reversi");
-        primaryStage.setHeight(8 * (PAWN_SIZE * 3 / 2) * 2);
-        primaryStage.setWidth(8 * (PAWN_SIZE * 3 / 2) * 2);
+        primaryStage.setHeight((8*PAWN_SIZE*2)*scoreHeightFactor);
+        primaryStage.setWidth(8*PAWN_SIZE*2+padding);
         primaryStage.setResizable(false);
 
         Board.initScores();

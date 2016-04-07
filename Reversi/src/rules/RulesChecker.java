@@ -14,10 +14,10 @@ import graphic.Pawn;
  */
 public class RulesChecker {
 
-    public final static int LEFT = 1;
-    public final static int RIGHT = 2;
-    public final static int TOP = 3;
-    public final static int BOTTOM = 4;
+    private final static int LEFT = 1;
+    private final static int RIGHT = 2;
+    private final static int TOP = 3;
+    private final static int BOTTOM = 4;
 
     public static int[][] playableCells(int[][] matrix, Player p) {
         // ROWS
@@ -25,21 +25,9 @@ public class RulesChecker {
         for (int y = 0; y < matrix.length; y++) {
             resMatrix[y] = new int[matrix[y].length];
             int[] rows = checkRow(matrix, y, p);
-            int[] diagsLeft = checkDiagonalRow(matrix, y, p, LEFT);
-            int[] diagsRight = checkDiagonalRow(matrix, y, p, RIGHT);
             for (int i = 0; i < rows.length; i++) {
-                if (rows[i] != 0) {
+                if (rows[i] != -1 && matrix[y][rows[i]]==0) {
                     resMatrix[y][rows[i]] = 1;
-                }
-            }
-            for (int i = 0; i < diagsLeft.length; i++) {
-                if (diagsLeft[i] != 0) {
-                    resMatrix[y][diagsLeft[i]] = 1;
-                }
-            }
-            for (int i = 0; i < diagsRight.length; i++) {
-                if (diagsRight[i] != 0) {
-                    resMatrix[y][diagsRight[i]] = 1;
                 }
             }
         }
@@ -47,21 +35,9 @@ public class RulesChecker {
         // COLUMNS
         for (int x = 0; x < matrix[0].length; x++) {
             int[] cols = checkCol(matrix, x, p);
-            int[] diagsTop = checkDiagonalCol(matrix, x, p, TOP);
-            int[] diagsBot = checkDiagonalCol(matrix, x, p, BOTTOM);
             for (int i = 0; i < cols.length; i++) {
-                if (cols[i] != 0) {
+                if (cols[i] != -1 && matrix[cols[i]][x]==0) {
                     resMatrix[cols[i]][x] = 1;
-                }
-            }
-            for (int i = 0; i < diagsTop.length; i++) {
-                if (diagsTop[i] != 0) {
-                    resMatrix[diagsTop[i]][x] = 1;
-                }
-            }
-            for (int i = 0; i < diagsBot.length; i++) {
-                if (diagsBot[i] != 0) {
-                    resMatrix[diagsBot[i]][x] = 1;
                 }
             }
         }
@@ -70,13 +46,17 @@ public class RulesChecker {
     }
 
     private static int[] checkRow(int[][] matrix, int rowId, Player p) {
-        int[] res = new int[matrix[0].length];
+        int[] res = emptyLine(matrix.length);
         int id = 0;
         for (int x = 0; x < matrix[rowId].length - 2; x++) {
             if (matrix[rowId][x] == 0 && matrix[rowId][x + 1] != p.getNumber() && matrix[rowId][x + 1] != 0) {
-                for (int i = 1; i < (matrix[rowId].length - x); i++) {
+                for (int i = 2; i < (matrix[rowId].length - x); i++) {
                     if (matrix[rowId][x + i] == p.getNumber()) {
                         res[id] = x;
+                        id++;
+                    }
+                    else{
+                        res[id] = -1;
                         id++;
                     }
                     if (matrix[rowId][x + i] == 0) {
@@ -100,7 +80,7 @@ public class RulesChecker {
     }
 
     private static int[] checkCol(int[][] matrix, int colId, Player p) {
-        int[] res = new int[matrix[0].length];
+        int[] res = emptyLine(matrix[0].length);
         int id = 0;
         for (int y = 0; y < matrix.length - 2; y++) {
             if (matrix[y][colId] == 0 && matrix[y + 1][colId] != p.getNumber() && matrix[y + 1][colId] != 0) {
@@ -115,15 +95,13 @@ public class RulesChecker {
                 }
             }
             if (matrix[y][colId] != 0 && matrix[y + 1][colId] != p.getNumber() && matrix[y + 1][colId] != 0) {
-                if (matrix[y - 1][colId] != matrix[y][colId]) {
-                    for (int i = y; i >= 0; i--) {
-                        if (matrix[i][colId] == p.getNumber()) {
-                            res[id] = y + 2;
-                            id++;
-                        }
-                        if (matrix[i][colId] == 0) {
-                            break;
-                        }
+                for (int i = y; i >= 0; i--) {
+                    if (matrix[i][colId] == p.getNumber()) {
+                        res[id] = y + 2;
+                        id++;
+                    }
+                    if (matrix[i][colId] == 0) {
+                        break;
                     }
                 }
             }
@@ -131,76 +109,74 @@ public class RulesChecker {
         return res;
     }
 
-    private static int[] checkDiagonalRow(int[][] matrix, int rowId, Player p, int side) {
-        int[] res = new int[matrix[0].length];
-        /*int id = 0;
-         for (int x = 0; x < matrix.length - 2; x++) {
-         if (matrix[rowId + x][x] == 0 && matrix[rowId + x + 1][x + 1] != p.getNumber() && matrix[rowId + x + 1][x + 1] != 0) {
-         for (int i = 1; i < matrix.length - y; i++) {
-         if (matrix[y + i][colId] == p.getNumber()) {
-         res[id] = y;
-         id++;
-         }
-         if (matrix[y + i][colId] == 0) {
-         break;
-         }
-         }
-         }
-         if (matrix[rowId - x][x] == 0 && matrix[rowId - x + 1][x + 1] != p.getNumber() && matrix[rowId - x + 1][x + 1] != 0) {
-         {
-         if (matrix[y - 1][colId] != matrix[y][colId]) {
-         for (int i = y; i >= 0; i--) {
-         if (matrix[i][colId] == p.getNumber()) {
-         res[id] = y + 2;
-         id++;
-         }
-         if (matrix[i][colId] == 0) {
-         break;
-         }
-         }
-         }
-         }
-         }
-         }*/
+    private static int[] checkDiagonal(int[][] matrix, int rowId, int colId, Player p, int side) {
+        int[] res = emptyLine(matrix[0].length);
+        int id = 0;
+        int x = rowId;
+        int y = colId;
+        if((rowId==0 && colId>0) || (rowId>0 && colId==0) || (rowId==0 && colId==0)){
+            if(matrix[y][x] == 0 && matrix[y+1][x+1] != p.getNumber() && matrix[y+1][x+1] != 0){
+                int i = 2;
+                while(x+i>=0 && x+i<matrix[0].length && y+i>=0 && y+i<matrix.length){
+                    if (matrix[y + i][x + i] == p.getNumber()) {
+                            res[id] = y;
+                            id++;
+                        }
+                    if (matrix[y + i][x + i] == 0) {
+                        break;
+                    }
+                    i++;
+                }
+            }
+            if (matrix[y][x] != 0 && matrix[y+1][x+1] != p.getNumber() && matrix[y+1][x+1] != 0) {
+                
+            }
+        }
+        if((rowId==matrix[0].length && colId<=matrix[0].length) || (rowId<matrix[0].length && colId==matrix[0].length) || (rowId==matrix[0].length && colId==matrix[0].length)){
+            if(matrix[y][x] == 0 && matrix[y-1][x-1] != p.getNumber() && matrix[y-1][x-1] != 0){
+                int i = 2;
+                while(x+i>=0 && x+i<matrix[0].length && y+i>=0 && y+i<matrix.length){
+                    if (matrix[y - i][x - i] == p.getNumber()) {
+                            res[id] = y;
+                            id++;
+                        }
+                    if (matrix[y + i][x + i] == 0) {
+                        break;
+                    }
+                    i++;
+                }
+            }
+            if (matrix[y][x] != 0 && matrix[y+1][x+1] != p.getNumber() && matrix[y+1][x+1] != 0) {
+                
+            }
+        }
         return res;
     }
 
-    private static int[] checkDiagonalCol(int[][] matrix, int colId, Player p, int side) {
-        int[] res = new int[matrix[0].length];
-        /*int id = 0;
-         for (int d = 0; d < matrix.length - 2; d++) {
-         if (matrix[rowId][colId] == 0 && matrix[rowId + 1][colId + 1] != p.getNumber() && matrix[rowId + 1][colId + 1] != 0) {
-         for (int i = 1; i < matrix.length - y; i++) {
-         if (matrix[y + i][colId] == p.getNumber()) {
-         res[id] = y;
-         id++;
-         }
-         if (matrix[y + i][colId] == 0) {
-         break;
-         }
-         }
-         }
-         if (matrix[y][colId] != 0 && matrix[y + 1][colId] != p.getNumber() && matrix[y + 1][colId] != 0) {
-         if (matrix[y - 1][colId] != matrix[y][colId]) {
-         for (int i = y; i >= 0; i--) {
-         if (matrix[i][colId] == p.getNumber()) {
-         res[id] = y + 2;
-         id++;
-         }
-         if (matrix[i][colId] == 0) {
-         break;
-         }
-         }
-         }
-         }
-         }*/
-        return res;
+    public static int[][] toIntMatrix(Pawn[][] matrix) {
+        int[][] playerMatrix = new int[matrix.length][];
+        for (int y = 0; y < matrix.length; y++) {
+            playerMatrix[y] = new int[matrix[y].length];
+            for (int x = 0; x < matrix[y].length; x++) {
+                if (matrix[y][x] == null) {
+                    playerMatrix[y][x] = 0;
+                } else {
+                    int p = matrix[y][x].getPlayer().getNumber();
+                    playerMatrix[y][x] = p;
+                }
+            }
+        }
+        return playerMatrix;
     }
-
-    /*public static int[][] flipPawn(int[][] matrix, int [][] lastPlayed, Player p){
-        
-     }
-     */
+    
+    private static int[] emptyLine(int size){
+        int[] emptyLine = new int[size];
+        for(int i = 0; i<size; i++){
+            emptyLine[i]=-1;
+        }
+        return emptyLine;
+    }
+    
     public static int[] getScores(int[][] matrix) {
         int score1 = 0;
         int score2 = 0;
@@ -218,22 +194,6 @@ public class RulesChecker {
         }
         int[] scores = {score1, score2};
         return scores;
-    }
-
-    public static int[][] toIntMatrix(Pawn[][] matrix) {
-        int[][] playerMatrix = new int[matrix.length][];
-        for (int y = 0; y < matrix.length; y++) {
-            playerMatrix[y] = new int[matrix[y].length];
-            for (int x = 0; x < matrix[y].length; x++) {
-                if (matrix[y][x] == null) {
-                    playerMatrix[y][x] = 0;
-                } else {
-                    int p = matrix[y][x].getPlayer().getNumber();
-                    playerMatrix[y][x] = p;
-                }
-            }
-        }
-        return playerMatrix;
     }
 
 }
