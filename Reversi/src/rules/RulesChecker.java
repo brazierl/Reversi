@@ -25,6 +25,8 @@ public class RulesChecker {
         for (int y = 0; y < matrix.length; y++) {
             resMatrix[y] = new int[matrix[y].length];
             int[] rows = checkRow(matrix, y, p);
+            //int[] diags1 = checkDiagonal(matrix, y, 0, p);
+            //int[] diags2 = checkDiagonal(matrix, y, matrix[0].length, p);
             for (int i = 0; i < rows.length; i++) {
                 if (rows[i] != -1 && matrix[y][rows[i]]==0) {
                     resMatrix[y][rows[i]] = 1;
@@ -35,12 +37,15 @@ public class RulesChecker {
         // COLUMNS
         for (int x = 0; x < matrix[0].length; x++) {
             int[] cols = checkCol(matrix, x, p);
+            //int[] diags3 = checkDiagonal(matrix, 0, x, p);
+            //int[] diags4 = checkDiagonal(matrix, matrix.length-1, x, p);
             for (int i = 0; i < cols.length; i++) {
                 if (cols[i] != -1 && matrix[cols[i]][x]==0) {
                     resMatrix[cols[i]][x] = 1;
                 }
             }
         }
+        
 
         return resMatrix;
     }
@@ -109,17 +114,19 @@ public class RulesChecker {
         return res;
     }
 
-    private static int[] checkDiagonal(int[][] matrix, int rowId, int colId, Player p, int side) {
-        int[] res = emptyLine(matrix[0].length);
+    private static int[][] checkDiagonal(int[][] matrix, Player p) {
+        // On teste chaque case vide en diagonale dans les 4 sens 
+        int[][] res = emptyMatrix(matrix[0].length);
         int id = 0;
-        int x = rowId;
-        int y = colId;
-        if((rowId==0 && colId>0) || (rowId>0 && colId==0) || (rowId==0 && colId==0)){
+        int x = 0;
+        int y = 0;
+        int colId=0;
+        for(int leftCol=0; leftCol<matrix[0].length; leftCol++){
             if(matrix[y][x] == 0 && matrix[y+1][x+1] != p.getNumber() && matrix[y+1][x+1] != 0){
                 int i = 2;
                 while(x+i>=0 && x+i<matrix[0].length && y+i>=0 && y+i<matrix.length){
                     if (matrix[y + i][x + i] == p.getNumber()) {
-                            res[id] = y;
+                            //res[id] = y;
                             id++;
                         }
                     if (matrix[y + i][x + i] == 0) {
@@ -128,16 +135,11 @@ public class RulesChecker {
                     i++;
                 }
             }
-            if (matrix[y][x] != 0 && matrix[y+1][x+1] != p.getNumber() && matrix[y+1][x+1] != 0) {
-                
-            }
-        }
-        if((rowId==matrix[0].length && colId<=matrix[0].length) || (rowId<matrix[0].length && colId==matrix[0].length) || (rowId==matrix[0].length && colId==matrix[0].length)){
             if(matrix[y][x] == 0 && matrix[y-1][x-1] != p.getNumber() && matrix[y-1][x-1] != 0){
                 int i = 2;
                 while(x+i>=0 && x+i<matrix[0].length && y+i>=0 && y+i<matrix.length){
                     if (matrix[y - i][x - i] == p.getNumber()) {
-                            res[id] = y;
+                            //res[id] = y;
                             id++;
                         }
                     if (matrix[y + i][x + i] == 0) {
@@ -146,8 +148,33 @@ public class RulesChecker {
                     i++;
                 }
             }
-            if (matrix[y][x] != 0 && matrix[y+1][x+1] != p.getNumber() && matrix[y+1][x+1] != 0) {
-                
+        }
+        if(colId==matrix[0].length-1){
+            if(matrix[y][x] == 0 && matrix[y-1][x-1] != p.getNumber() && matrix[y-1][x-1] != 0){
+                int i = 2;
+                while(x+i>=0 && x+i<matrix[0].length && y+i>=0 && y+i<matrix.length){
+                    if (matrix[y - i][x - i] == p.getNumber()) {
+                            //res[id] = y;
+                            id++;
+                        }
+                    if (matrix[y + i][x + i] == 0) {
+                        break;
+                    }
+                    i++;
+                }
+            }
+            if (matrix[y][x] != 0 && matrix[y-1][x-1] != p.getNumber() && matrix[y-1][x-1] != 0) {
+                int i = 2;
+                while(x+i>=0 && x+i<matrix[0].length && y+i>=0 && y+i<matrix.length){
+                    if (matrix[y - i][x - i] == p.getNumber()) {
+                            //res[id] = y;
+                            id++;
+                        }
+                    if (matrix[y + i][x + i] == 0) {
+                        break;
+                    }
+                    i++;
+                }
             }
         }
         return res;
@@ -175,6 +202,14 @@ public class RulesChecker {
             emptyLine[i]=-1;
         }
         return emptyLine;
+    }
+    
+    private static int[][] emptyMatrix(int size){
+        int[][] emptyMatrix = new int[size][];
+        for(int i = 0; i<size; i++){
+            emptyMatrix[i]=emptyLine(size);
+        }
+        return emptyMatrix;
     }
     
     public static int[] getScores(int[][] matrix) {
