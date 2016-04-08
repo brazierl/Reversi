@@ -8,16 +8,10 @@ package reversi;
 import controller.Player;
 import graphic.Board;
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 /**
@@ -101,6 +95,13 @@ public class Game extends Application {
 
     public static void setCurrentPlayer(Player currentPlayer) {
         Game.currentPlayer = currentPlayer;
+    }
+    
+    public static Player getPlayerByNumber(int n){
+        switch(n){
+            case 1: return player1;
+            default : return player2;
+        }
     }
 
     /**

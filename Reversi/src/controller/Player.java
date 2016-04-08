@@ -16,13 +16,13 @@ public class Player {
     private int score;
     private String name;
     private int number;
-    private boolean isHuman;
+    private boolean human;
 
     public Player(String name, int number, boolean isHuman) {
         this.score = 0;
         this.name = name;
         this.number = number;
-        this.isHuman = isHuman;
+        this.human = isHuman;
     }
 
     public int getScore() {
@@ -49,6 +49,10 @@ public class Player {
         this.number = number;
     }
 
+    public boolean isHuman() {
+        return human;
+    }
+    
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
@@ -67,7 +71,7 @@ public class Player {
         if (this.number != other.number) {
             return false;
         }
-        if (this.isHuman != other.isHuman) {
+        if (this.human != other.human) {
             return false;
         }
         return true;

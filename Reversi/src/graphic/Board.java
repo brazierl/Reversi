@@ -5,13 +5,11 @@
  */
 package graphic;
 
+import controller.HumanController;
 import javafx.event.*;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
@@ -62,7 +60,7 @@ public class Board {
     }
 
     private static void displayButtons() {
-        int[][] btnMatrix = RulesChecker.playableCells(RulesChecker.toIntMatrix(matrix), Game.getCurrentPlayer());
+        int[][] btnMatrix = RulesChecker.playableCells(Pawn.toIntMatrix(matrix), Game.getCurrentPlayer());
         for (int y = 0; y < btnMatrix.length; y++) {
             for (int x = 0; x < btnMatrix[y].length; x++) {
                 Button btn = new Button();
@@ -71,14 +69,19 @@ public class Board {
                 btn.setMinSize(Game.getPAWN_SIZE() * 2, Game.getPAWN_SIZE() * 2);
                 if (btnMatrix[y][x] == 1) {
                     btn.setStyle("-fx-background-color: #425A46; -fx-border-color: black; -fx-border-width: 1;");
-                    btn.setOnAction((ActionEvent event) -> {
-                        String[] s = btn.getId().split("/");
-                        int x1 = Integer.parseInt(s[0]);
-                        int y1 = Integer.parseInt(s[1]);
-                        Board.getMatrix()[y1][x1] = new Pawn(Game.getCurrentPlayer());
-                        Game.swapCurrentPlayer();
-                        Board.refreshDisplay();
-                    });
+                    if(Game.getCurrentPlayer().isHuman()){
+                        btn.setOnAction((ActionEvent event) -> {
+                            String[] s = btn.getId().split("/");
+                            int x1 = Integer.parseInt(s[0]);
+                            int y1 = Integer.parseInt(s[1]);
+                            matrix = HumanController.onClickPawn(matrix,x1,y1);
+                            Game.swapCurrentPlayer();
+                            Board.refreshDisplay();
+                        });
+                    }
+                    else{
+                        // TODO AI
+                    }
                 } else {
                     btn.setStyle("-fx-background-color: transparent; -fx-border-color: black; -fx-border-width: 1;");
                 }
@@ -89,7 +92,7 @@ public class Board {
 
    
     private static void updateScores() {
-        int[] checkScores = RulesChecker.getScores(RulesChecker.toIntMatrix(matrix));
+        int[] checkScores = RulesChecker.getScores(Pawn.toIntMatrix(matrix));
         Game.getPlayer1().setScore(checkScores[0]);
         Game.getPlayer2().setScore(checkScores[1]);
     }

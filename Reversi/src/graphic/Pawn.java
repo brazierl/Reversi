@@ -6,7 +6,6 @@
 
 package graphic;
 
-import com.sun.prism.paint.Color;
 import controller.Player;
 import javafx.scene.shape.Circle;
 import reversi.Game;
@@ -16,6 +15,7 @@ import reversi.Game;
  * @author p1509283
  */
 public class Pawn {
+
     private Player player;
     private Circle circle;
     
@@ -44,5 +44,34 @@ public class Pawn {
         this.circle = circle;
     }
     
-    
+    public static int[][] toIntMatrix(Pawn[][] matrix) {
+        int[][] playerMatrix = new int[matrix.length][];
+        for (int y = 0; y < matrix.length; y++) {
+            playerMatrix[y] = new int[matrix[y].length];
+            for (int x = 0; x < matrix[y].length; x++) {
+                if (matrix[y][x] == null) {
+                    playerMatrix[y][x] = 0;
+                } else {
+                    int p = matrix[y][x].getPlayer().getNumber();
+                    playerMatrix[y][x] = p;
+                }
+            }
+        }
+        return playerMatrix;
+    }
+
+    public static Pawn[][] toMatrix(int[][] matrix) {
+        Pawn[][] playerMatrix = new Pawn[matrix.length][];
+        for (int y = 0; y < matrix.length; y++) {
+            playerMatrix[y] = new Pawn[matrix[y].length];
+            for (int x = 0; x < matrix[y].length; x++) {
+                if (matrix[y][x] == 0) {
+                    playerMatrix[y][x] = null;
+                } else {
+                    playerMatrix[y][x] = new Pawn(Game.getPlayerByNumber(matrix[y][x]));
+                }
+            }
+        }
+        return playerMatrix;
+    }
 }
