@@ -27,6 +27,8 @@ public class Game extends Application {
     private static Player player1;
     private static Player player2;
     private static Player currentPlayer;
+    
+    private static int difficulty;
 
     public static void swapCurrentPlayer() {
         if (currentPlayer.equals(player1)) {
@@ -38,9 +40,14 @@ public class Game extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        player1 = new Player("Thibault", 1, true);
-        player2 = new Player("Louis", 2, true);
+        // init players
+        player1 = new Player("Joueur 1", 1, true);
+        player2 = new Player("Joueur 2", 2, true);
         currentPlayer = player1;
+        
+        // init difficulty
+        difficulty = 1;
+        
         int padding = 20;
         double scoreHeightFactor = 1.2;
         primaryStage.setTitle("Reversi");
@@ -66,8 +73,6 @@ public class Game extends Application {
         
         root.getChildren().add(childTScore1);
         root.getChildren().add(childTScore2);
-
-        
         
         Scene scene = new Scene(root, 300, 250);
         scene.setFill(Color.GREEN);
@@ -104,6 +109,10 @@ public class Game extends Application {
         }
     }
 
+    public static int getDifficulty() {
+        return difficulty;
+    }
+    
     /**
      * @param args the command line arguments
      */

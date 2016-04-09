@@ -17,6 +17,6 @@ import rules.RulesChecker;
 public class HumanController extends Controller {
  
     public static Pawn[][] onClickPawn(Pawn[][] matrix, int x1, int y1) {
-        return Pawn.toMatrix(RulesChecker.returnMatrixMove(Pawn.toIntMatrix(matrix), y1, x1, Game.getCurrentPlayer())).clone();
+        return Pawn.toMatrix(RulesChecker.returnMatrixMove(Pawn.toIntMatrix(matrix), y1, x1, Game.getCurrentPlayer()));
     }
 }

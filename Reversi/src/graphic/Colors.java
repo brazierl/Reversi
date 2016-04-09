@@ -13,7 +13,7 @@ import javafx.scene.paint.Color;
  * @author p1509283
  */
 public enum Colors {
-    BLACK(1,Color.BLACK), WHITE(2,Color.WHITE);
+    WHITE(1,Color.WHITE),BLACK(2,Color.BLACK);
     
     private final Color graphicColor;
     private final int number;

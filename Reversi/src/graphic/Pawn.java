@@ -52,8 +52,7 @@ public class Pawn {
                 if (matrix[y][x] == null) {
                     playerMatrix[y][x] = 0;
                 } else {
-                    int p = matrix[y][x].getPlayer().getNumber();
-                    playerMatrix[y][x] = p;
+                    playerMatrix[y][x] = matrix[y][x].getPlayer().getNumber();
                 }
             }
         }

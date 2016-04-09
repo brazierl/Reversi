@@ -141,13 +141,14 @@ public class RulesChecker {
     
     public static int[][] returnMatrixMove(int[][] matrix, int rowId, int colId,Player p){
         int[][] resMatrix = matrix.clone();
-        int[][] resRow = checkRowToReturn(matrix, rowId, colId, p);
-        int[][] resCol = checkColToReturn(matrix, rowId, colId, p);
-        int[][] resDiag = checkDiagonalToReturn(matrix, rowId, colId, p);
-        for (int y = 0; y < matrix.length; y++) {
-            for (int x = 0; x < matrix[0].length; x++) {
+        int[][] resRow = checkRowToReturn(matrix.clone(), rowId, colId, p);
+        int[][] resCol = checkColToReturn(matrix.clone(), rowId, colId, p);
+        int[][] resDiag = checkDiagonalToReturn(matrix.clone(), rowId, colId, p);
+        for (int y = 0; y < resMatrix.length; y++) {
+            resMatrix[y] = matrix[y].clone();
+            for (int x = 0; x < resMatrix[y].length; x++) {
                 if(resRow[y][x] == 1 || resCol[y][x] == 1 || resDiag[y][x] == 1)
-                    resMatrix[x][y]=p.getNumber();
+                    resMatrix[y][x]=p.getNumber();
             }
         }
         resMatrix[rowId][colId] = p.getNumber();
@@ -159,10 +160,10 @@ public class RulesChecker {
         int[][] resMatrix = convertToZeroMatrix(matrix);
         if (colId < matrix[rowId].length - 2) {
             if (matrix[rowId][colId + 1] != p.getNumber() && matrix[rowId][colId + 1] != 0) {
-                int[][] tmp = resMatrix.clone();
-                for (int i = 2; i < (matrix[rowId].length - colId); i++) {
+                int[][] tmp = getCloneMatrix(resMatrix);
+                for (int i = 1; i < (matrix[rowId].length - colId); i++) {
                     if (matrix[rowId][colId + i] == p.getNumber()) {
-                        resMatrix = tmp;
+                        resMatrix = getCloneMatrix(tmp);
                         break;
                     }
                     if (matrix[rowId][colId + i] == 0) {
@@ -174,10 +175,10 @@ public class RulesChecker {
         }
         if (colId > 2) {
             if (matrix[rowId][colId - 1] != p.getNumber() && matrix[rowId][colId - 1] != 0) {
-                int[][] tmp = resMatrix.clone();
-                for (int i = colId - 1; i >= 0; i--) {
+                int[][] tmp = getCloneMatrix(resMatrix);
+                for (int i = colId-1; i >= 0; i--) {
                     if (matrix[rowId][i] == p.getNumber()) {
-                        resMatrix = tmp;
+                        resMatrix = getCloneMatrix(tmp);
                         break;
                     }
                     if (matrix[rowId][i] == 0) {
@@ -195,10 +196,10 @@ public class RulesChecker {
         int[][] resMatrix = convertToZeroMatrix(matrix);
         if (rowId < matrix.length - 2) {
             if (matrix[rowId + 1][colId] != p.getNumber() && matrix[rowId + 1][colId] != 0) {
-                int[][] tmp = resMatrix.clone();
-                for (int i = 2; i < matrix.length - rowId; i++) {
+                int[][] tmp = getCloneMatrix(resMatrix);
+                for (int i = 1; i < matrix.length - rowId; i++) {
                     if (matrix[rowId + i][colId] == p.getNumber()) {
-                        resMatrix = tmp;
+                        resMatrix = tmp.clone();
                         break;
                     }
                     if (matrix[rowId + i][colId] == 0) {
@@ -210,10 +211,10 @@ public class RulesChecker {
         }
         if (rowId > 2) {
             if (matrix[rowId - 1][colId] != p.getNumber() && matrix[rowId - 1][colId] != 0) {
-                int[][] tmp = resMatrix.clone();
-                for (int i = rowId - 1; i >= 0; i--) {
+                int[][] tmp = getCloneMatrix(resMatrix);
+                for (int i = rowId-1; i >= 0; i--) {
                     if (matrix[i][colId] == p.getNumber()) {
-                        resMatrix = tmp;
+                        resMatrix = getCloneMatrix(tmp);
                         break;
                     }
                     if (matrix[i][colId] == 0) {
@@ -231,10 +232,10 @@ public class RulesChecker {
         int[][] resMatrix = convertToZeroMatrix(matrix);
         if (rowId < matrix.length - 2 && colId < matrix[rowId].length - 2) {
             if (matrix[rowId + 1][colId + 1] != p.getNumber() && matrix[rowId + 1][colId + 1] != 0) {
-                int[][] tmp = resMatrix.clone();
-                for (int i = 2; i < Math.min(matrix.length-rowId-1,matrix.length-colId-1); i++) {
+                int[][] tmp = getCloneMatrix(resMatrix);
+                for (int i = 1; i < Math.min(matrix.length-rowId-1,matrix.length-colId-1); i++) {
                     if (matrix[rowId + i][colId + i] == p.getNumber()) {
-                        resMatrix = tmp;
+                        resMatrix = getCloneMatrix(tmp);
                         break;
                     }
                     if (matrix[rowId + i][colId + i] == 0) {
@@ -246,10 +247,10 @@ public class RulesChecker {
         }
         if (rowId > 2 && colId < matrix[rowId].length - 2) {
             if (matrix[rowId - 1][colId + 1] != p.getNumber() && matrix[rowId - 1][colId + 1] != 0) {
-                int[][] tmp = resMatrix.clone();
-                for (int i = 2; i < Math.min(rowId,matrix.length-colId-1); i++) {
+                int[][] tmp = getCloneMatrix(resMatrix);
+                for (int i = 1; i < Math.min(rowId,matrix.length-colId-1); i++) {
                     if (matrix[rowId - i][colId + i] == p.getNumber()) {
-                        resMatrix = tmp;
+                        resMatrix = getCloneMatrix(tmp);
                         break;
                     }
                     if (matrix[rowId - i][colId + i] == 0) {
@@ -261,10 +262,10 @@ public class RulesChecker {
         }
         if (rowId < matrix.length - 2 && colId > 2) {
             if (matrix[rowId + 1][colId - 1] != p.getNumber() && matrix[rowId + 1][colId - 1] != 0) {
-                int[][] tmp = resMatrix.clone();
-                for (int i = 2; i < Math.min(matrix.length-rowId-1,colId); i++) {
+                int[][] tmp = getCloneMatrix(resMatrix);
+                for (int i = 1; i < Math.min(matrix.length-rowId-1,colId); i++) {
                     if (matrix[rowId + i][colId - i] == p.getNumber()) {
-                        resMatrix = tmp;
+                        resMatrix = getCloneMatrix(tmp);
                         break;
                     }
                     if (matrix[rowId + i][colId - i] == 0) {
@@ -276,10 +277,10 @@ public class RulesChecker {
         }
         if (rowId > 2 && colId > 2) {
             if (matrix[rowId - 1][colId - 1] != p.getNumber() && matrix[rowId - 1][colId - 1] != 0) {
-                int[][] tmp = resMatrix.clone();
-                for (int i = 2; i <Math.min(rowId,colId); i++) {
+                int[][] tmp = getCloneMatrix(resMatrix);
+                for (int i = 1; i <Math.min(rowId,colId); i++) {
                     if (matrix[rowId - i][colId - i] == p.getNumber()) {
-                        resMatrix = tmp;
+                        resMatrix = getCloneMatrix(tmp);
                         break;
                     }
                     if (matrix[rowId - i][colId - i] == 0) {
@@ -318,6 +319,14 @@ public class RulesChecker {
             for (int x = 0; x < resMatrix[0].length; x++) {
                 resMatrix[y][x]=0;
             }
+        }
+        return resMatrix;
+    }
+    
+    private static int[][] getCloneMatrix(int[][] matrix){
+        int[][] resMatrix = matrix.clone();
+        for (int y = 0; y < resMatrix.length; y++) {
+            resMatrix[y] = matrix[y].clone();
         }
         return resMatrix;
     }
