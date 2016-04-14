@@ -6,6 +6,7 @@
 package graphic;
 
 import controller.Controller;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.event.*;
@@ -28,6 +29,7 @@ public class Board {
     private static Text scorePlayer1;
     private static Text scorePlayer2;
     private static Pawn[][] matrix;
+    private static ArrayList<Move> moves = new ArrayList<>();
 
     public static void initBoard(int X_SIZE, int Y_SIZE) {
         grid = new GridPane();
@@ -94,6 +96,7 @@ public class Board {
                     String[] s = btn.getId().split("/");
                     int x1 = Integer.parseInt(s[0]);
                     int y1 = Integer.parseInt(s[1]);
+                    moves.add(new Move(x,y,Pawn.toIntMatrix(matrix)));
                     matrix = Controller.onClickPawn(matrix, x1, y1);
                     Game.swapCurrentPlayer();
                     refreshDisplay();
@@ -110,6 +113,7 @@ public class Board {
         int[][] btnMatrix = Move.playableCells(Pawn.toIntMatrix(matrix), Game.getCurrentPlayer());
         int[] coordAI = Controller.nextMove(matrix, btnMatrix);
         if (coordAI != null) {
+            moves.add(new Move(coordAI[1], coordAI[0],Pawn.toIntMatrix(matrix)));
             matrix = Controller.onClickPawn(matrix, coordAI[1], coordAI[0]);
             grid.setDisable(false);
         }
