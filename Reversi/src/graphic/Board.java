@@ -5,8 +5,7 @@
  */
 package graphic;
 
-import controller.AIController;
-import controller.HumanController;
+import controller.Controller;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.event.*;
@@ -17,7 +16,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import reversi.Game;
-import rules.RulesChecker;
+import rules.Move;
 
 /**
  *
@@ -63,70 +62,78 @@ public class Board {
     }
 
     private static void displayButtons() {
-        int[][] btnMatrix = RulesChecker.playableCells(Pawn.toIntMatrix(matrix), Game.getCurrentPlayer());
+        int[][] btnMatrix = Move.playableCells(Pawn.toIntMatrix(matrix), Game.getCurrentPlayer());
         int nbPlayableCells = 0;
-        int[] coordAI = AIController.nextMove(matrix,btnMatrix);
+        int[] coordAI = Controller.nextMove(matrix, btnMatrix);
         for (int y = 0; y < btnMatrix.length; y++) {
             for (int x = 0; x < btnMatrix[y].length; x++) {
-                Button btn = new Button();
-                btn.setId(x + "/" + y);
-                btn.setMaxSize(Game.getPAWN_SIZE() * 2, Game.getPAWN_SIZE() * 2);
-                btn.setMinSize(Game.getPAWN_SIZE() * 2, Game.getPAWN_SIZE() * 2);
-                if (btnMatrix[y][x] == 1) {
+                if (displayButton(y, x, btnMatrix[y][x])) {
                     nbPlayableCells++;
-                    btn.setStyle("-fx-background-color: #425A46; -fx-border-color: black; -fx-border-width: 1;");
-                    if(Game.getCurrentPlayer().isHuman()){
-                        btn.setOnAction((ActionEvent event) -> {
-                            String[] s = btn.getId().split("/");
-                            int x1 = Integer.parseInt(s[0]);
-                            int y1 = Integer.parseInt(s[1]);
-                            matrix = HumanController.onClickPawn(matrix,x1,y1);
-                            Game.swapCurrentPlayer();
-                            refreshDisplay();
-                        });
-                    }
-                    else{
-                        btn.setStyle("-fx-background-color: transparent; -fx-border-color: black; -fx-border-width: 1;");
-                    }
-                } else {
-                    btn.setStyle("-fx-background-color: transparent; -fx-border-color: black; -fx-border-width: 1;");
                 }
-                grid.add(btn, x, y);
             }
         }
-        if(!Game.getCurrentPlayer().isHuman()){
-            matrix = HumanController.onClickPawn(matrix,coordAI[0],coordAI[1]);
-            Game.swapCurrentPlayer();
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(Board.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            refreshDisplay();
+        if (!Game.getCurrentPlayer().isHuman()) {
+            grid.setDisable(true);
         }
-        if(nbPlayableCells==0){
+        if (nbPlayableCells == 0 && !isMatrixFull()) {
             Game.swapCurrentPlayer();
             refreshDisplay();
         }
     }
 
-   
+    private static boolean displayButton(int y, int x, int cell) {
+        Button btn = new Button();
+        boolean ans = false;
+        btn.setId(x + "/" + y);
+        btn.setMaxSize(Game.getPAWN_SIZE() * 2, Game.getPAWN_SIZE() * 2);
+        btn.setMinSize(Game.getPAWN_SIZE() * 2, Game.getPAWN_SIZE() * 2);
+        btn.setStyle("-fx-background-color: #425A46; -fx-border-color: black; -fx-border-width: 1;");
+        if (cell == 1) {
+            ans = true;
+            if (Game.getCurrentPlayer().isHuman()) {
+                btn.setOnAction((ActionEvent event) -> {
+                    String[] s = btn.getId().split("/");
+                    int x1 = Integer.parseInt(s[0]);
+                    int y1 = Integer.parseInt(s[1]);
+                    matrix = Controller.onClickPawn(matrix, x1, y1);
+                    Game.swapCurrentPlayer();
+                    refreshDisplay();
+                });
+            }
+        } else {
+            btn.setStyle("-fx-background-color: transparent; -fx-border-color: black; -fx-border-width: 1;");
+        }
+        grid.add(btn, x, y);
+        return ans;
+    }
+
+    private static void playAI() {
+        int[][] btnMatrix = Move.playableCells(Pawn.toIntMatrix(matrix), Game.getCurrentPlayer());
+        int[] coordAI = Controller.nextMove(matrix, btnMatrix);
+        if (coordAI != null) {
+            matrix = Controller.onClickPawn(matrix, coordAI[1], coordAI[0]);
+            grid.setDisable(false);
+        }
+        Game.swapCurrentPlayer();
+        refreshDisplay();
+    }
+
     private static void updateScores() {
-        int[] checkScores = RulesChecker.getScores(Pawn.toIntMatrix(matrix));
+        int[] checkScores = Move.getScores(Pawn.toIntMatrix(matrix));
         Game.getPlayer1().setScore(checkScores[0]);
         Game.getPlayer2().setScore(checkScores[1]);
     }
-    
+
     public static void displayScores() {
         scorePlayer1.setText(Game.getPlayer1().getName() + " : " + Game.getPlayer1().getScore());
-        scorePlayer2.setText(Game.getPlayer2().getName() + " : " + Game.getPlayer2().getScore());   
+        scorePlayer2.setText(Game.getPlayer2().getName() + " : " + Game.getPlayer2().getScore());
     }
-    
+
     public static void initScores() {
         scorePlayer1 = new Text(30, 30, Game.getPlayer1().getName() + " : " + Game.getPlayer1().getScore());
         scorePlayer2 = new Text(100, 15, Game.getPlayer2().getName() + " : " + Game.getPlayer2().getScore());
-        scorePlayer1.setFont(Font.font(40));
-        scorePlayer2.setFont(Font.font(40));
+        scorePlayer1.setFont(Font.font("Algerian", 40));
+        scorePlayer2.setFont(Font.font("Algerian", 40));
         scorePlayer2.setTextAlignment(TextAlignment.RIGHT);
     }
 
@@ -137,11 +144,11 @@ public class Board {
     public static Text getScorePlayer1() {
         return scorePlayer1;
     }
-    
+
     public static Text getScorePlayer2() {
         return scorePlayer2;
     }
-    
+
     public static Pawn[][] getMatrix() {
         return matrix;
     }
@@ -151,21 +158,24 @@ public class Board {
     }
 
     private static void refreshDisplay() {
-        if(isMatrixFull())
+        if (isMatrixFull()) {
             displayGameOver();
-        else{
+        } else {
+            if (!Game.getCurrentPlayer().isHuman()) {
+                playAI();
+            }
             grid.getChildren().clear();
             grid.setAlignment(Pos.CENTER);
-            grid.setStyle("-fx-background-color: green; -fx-border-color: black; -fx-border-width: 1;");
-            displayButtons();
+            grid.setStyle("-fx-background-color: green;");
             displayCircles();
             updateScores();
             displayScores();
-            displayButtons(); 
+            displayButtons();
+
         }
     }
 
-    private static boolean isMatrixFull(){
+    private static boolean isMatrixFull() {
         for (Pawn[] matrix1 : matrix) {
             for (Pawn item : matrix1) {
                 if (item == null) {
@@ -177,7 +187,8 @@ public class Board {
     }
 
     private static void displayGameOver() {
-        
+        grid.setDisable(true);
+
     }
 
 }

@@ -8,8 +8,13 @@ package reversi;
 import controller.Player;
 import graphic.Board;
 import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -40,9 +45,9 @@ public class Game extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        // init players
+         // init players
         player1 = new Player("Joueur 1", 1, true);
-        player2 = new Player("Joueur 2", 2, true);
+        player2 = new Player("Joueur 2", 2, false);
         currentPlayer = player1;
         
         // init difficulty
@@ -66,15 +71,32 @@ public class Game extends Application {
         childTScore1.getChildren().add(Board.getScorePlayer1());
         childTScore2.getChildren().add(Board.getScorePlayer2());
         
-        childTScore1.setAlignment(Pos.TOP_LEFT);
-        childTScore2.setAlignment(Pos.TOP_RIGHT);
+        childTScore1.setAlignment(Pos.BOTTOM_LEFT);
+        childTScore2.setAlignment(Pos.BOTTOM_RIGHT);
         childTScore1.setMouseTransparent(true);
         childTScore2.setMouseTransparent(true);
         
         root.getChildren().add(childTScore1);
         root.getChildren().add(childTScore2);
         
+        MenuBar menuBar = new MenuBar();
+        Menu menuFile = new Menu("Fichier");
+        MenuItem add = new MenuItem("Reset Game");
+        add.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent t) {
+                Board.initBoard(X_SIZE, Y_SIZE);
+                root.setVisible(true);
+            }
+        });       
+        menuFile.getItems().addAll(add);
+        Menu menuEdit = new Menu("Edition");
+        Menu menuView = new Menu("Partie");
+ 
+        menuBar.getMenus().addAll(menuFile, menuEdit, menuView);
+        root.setAlignment(Pos.TOP_CENTER);
+        
         Scene scene = new Scene(root, 300, 250);
+        ((StackPane) scene.getRoot()).getChildren().addAll(menuBar);
         scene.setFill(Color.GREEN);
         primaryStage.setScene(scene);
 

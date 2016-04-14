@@ -6,15 +6,46 @@
 package rules;
 
 import controller.Player;
-import graphic.Pawn;
-import reversi.Game;
-
 /**
  *
  * @author p1509283
  */
-public class RulesChecker {
-        
+public class Move {
+    
+    private int x;
+    private int y;
+    private int[][] previousMatrix;
+
+    public Move(int x, int y, int[][] previousMatrix) {
+        this.x = x;
+        this.y = y;
+        this.previousMatrix = previousMatrix;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+
+    public int[][] getPreviousMatrix() {
+        return previousMatrix;
+    }
+
+    public void setPreviousMatrix(int[][] previousMatrix) {
+        this.previousMatrix = previousMatrix;
+    }
+    
     public static int[][] playableCells(int[][] matrix, Player p) {
         int[][] resMatrix = new int[matrix.length][];
         for (int y = 0; y < matrix.length; y++) {
