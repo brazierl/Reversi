@@ -64,7 +64,6 @@ public class Board {
     private static void displayButtons() {
         int[][] btnMatrix = Move.playableCells(Pawn.toIntMatrix(matrix), Game.getCurrentPlayer());
         int nbPlayableCells = 0;
-        int[] coordAI = Controller.nextMove(matrix, btnMatrix);
         for (int y = 0; y < btnMatrix.length; y++) {
             for (int x = 0; x < btnMatrix[y].length; x++) {
                 if (displayButton(y, x, btnMatrix[y][x])) {

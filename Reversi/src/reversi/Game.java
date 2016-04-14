@@ -51,7 +51,7 @@ public class Game extends Application {
         currentPlayer = player1;
         
         // init difficulty
-        difficulty = 1;
+        difficulty = 2;
         
         int padding = 20;
         double scoreHeightFactor = 1.2;

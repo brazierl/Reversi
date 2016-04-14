@@ -131,7 +131,7 @@ public class Move {
                 }
             }
         }
-        if (rowId > 2 && colId < matrix[rowId].length - 2) {
+        if (rowId > 1 && colId < matrix[rowId].length - 2) {
             if (matrix[rowId - 1][colId + 1] != p.getNumber() && matrix[rowId - 1][colId + 1] != 0) {
                 for (int i = 2; i < Math.min(rowId,matrix.length-colId-1); i++) {
                     if (matrix[rowId - i][colId + i] == p.getNumber()) {
@@ -155,7 +155,7 @@ public class Move {
                 }
             }
         }
-        if (rowId > 2 && colId > 2) {
+        if (rowId > 1 && colId > 1) {
             if (matrix[rowId - 1][colId - 1] != p.getNumber() && matrix[rowId - 1][colId - 1] != 0) {
                 for (int i = 2; i <Math.min(rowId,colId); i++) {
                     if (matrix[rowId - i][colId - i] == p.getNumber()) {
@@ -276,7 +276,7 @@ public class Move {
                 }
             }
         }
-        if (rowId > 2 && colId < matrix[rowId].length - 2) {
+        if (rowId > 1 && colId < matrix[rowId].length - 2) {
             if (matrix[rowId - 1][colId + 1] != p.getNumber() && matrix[rowId - 1][colId + 1] != 0) {
                 int[][] tmp = getCloneMatrix(resMatrix);
                 for (int i = 1; i < Math.min(rowId,matrix.length-colId-1); i++) {
@@ -291,7 +291,7 @@ public class Move {
                 }
             }
         }
-        if (rowId < matrix.length - 2 && colId > 2) {
+        if (rowId < matrix.length - 2 && colId > 1) {
             if (matrix[rowId + 1][colId - 1] != p.getNumber() && matrix[rowId + 1][colId - 1] != 0) {
                 int[][] tmp = getCloneMatrix(resMatrix);
                 for (int i = 1; i < Math.min(matrix.length-rowId-1,colId); i++) {
@@ -306,7 +306,7 @@ public class Move {
                 }
             }
         }
-        if (rowId > 2 && colId > 2) {
+        if (rowId > 1 && colId > 1) {
             if (matrix[rowId - 1][colId - 1] != p.getNumber() && matrix[rowId - 1][colId - 1] != 0) {
                 int[][] tmp = getCloneMatrix(resMatrix);
                 for (int i = 1; i <Math.min(rowId,colId); i++) {
