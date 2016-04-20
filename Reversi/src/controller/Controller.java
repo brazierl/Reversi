@@ -7,7 +7,6 @@ package controller;
 
 import graphic.Pawn;
 import java.util.ArrayList;
-import java.util.HashMap;
 import javafx.util.Pair;
 import reversi.Game;
 import rules.Move;
@@ -25,54 +24,60 @@ public class Controller {
     public static int[] nextMove(Pawn[][] matrix, int[][] playableCells) {
         ArrayList<int[]> coords = toCoords(playableCells);
         if (coords.size() > 0) {
+            Pair<Integer,Move> p;
             switch (Game.getDifficulty()) {
                 default:
                     return coords.get((int) Math.round(Math.random() * (coords.size() - 1)));
                 case 2:
-                    Pair<Integer,Move> p = miniMax(matrix, coords, 4, Game.getCurrentPlayer());
+                    p = miniMax(matrix, coords, 4, Game.getCurrentPlayer());
                     if(p.getValue()!=null)
                         return new int[] {p.getValue().getY(),p.getValue().getX()};
                     else
                         return null;
                 case 3:
-                    return null;
+                    p = miniMax(matrix, coords, 6, Game.getCurrentPlayer());
+                    if(p.getValue()!=null)
+                        return new int[] {p.getValue().getY(),p.getValue().getX()};
+                    else
+                        return null;
             }
         }
         return null;
     }
 
     public static Pair<Integer,Move> miniMax(Pawn[][] matrix, ArrayList<int[]> coords, int depth, Player player) {
-        if (isMatrixFull(matrix) || depth==0) {
+        Player secondPlayer =player.equals(Game.getPlayer1())?Game.getPlayer2():Game.getPlayer1();
+        if (isMatrixFull(matrix) || depth==0 /*|| Move.hasPlayableCell(Pawn.toIntMatrix(matrix), player) || Move.hasPlayableCell(Pawn.toIntMatrix(matrix), secondPlayer)*/) {
             return new Pair(getScore(matrix, player), null);
         }
         Move bestMove = null;
         int bestScore;
         Pawn[][] tmp;
-        if (player==Game.getCurrentPlayer()) { //=Programme
+        if (player.equals(Game.getCurrentPlayer())) {
             bestScore = Integer.MIN_VALUE;
             for (int[] coord : coords) {
                 tmp = onClickPawn(matrix, coord[1], coord[0]);
-                Pair<Integer,Move> p = miniMax(tmp.clone(), toCoords(Move.playableCells(Pawn.toIntMatrix(tmp),player)),depth - 1, player);
+                Pair<Integer,Move> p = miniMax(tmp, toCoords(Move.playableCells(Pawn.toIntMatrix(tmp),player)),depth - 1, player);
                 int score = p.getKey();
                 if (score > bestScore) {
                     bestScore = score;
                     bestMove = new Move(coord[1], coord[0], Pawn.toIntMatrix(matrix));
                 }
             }
-        } else { //type MIN = adversaire
+        } else { 
             bestScore = Integer.MAX_VALUE;
             for (int[] coord : coords) {
                 tmp = onClickPawn(matrix, coord[1], coord[0]);
-                Pair<Integer,Move> p = miniMax(tmp.clone(), toCoords(Move.playableCells(Pawn.toIntMatrix(tmp),player)),depth - 1, player);
+                Pair<Integer,Move> p = miniMax(tmp, toCoords(Move.playableCells(Pawn.toIntMatrix(tmp),player)),depth - 1, (player.equals(Game.getPlayer1())?Game.getPlayer2():Game.getPlayer1()));
                 int score = p.getKey();
                 if (score < bestScore) {
                     bestScore = score;
                     bestMove = new Move(coord[1], coord[0], Pawn.toIntMatrix(matrix));
                 }
             }
-        }
+        }                                                 
         return new Pair(bestScore, bestMove);
-    }
+    } 
     
     private static boolean isMatrixFull(Pawn[][] matrix) {
         for (Pawn[] matrix1 : matrix) {

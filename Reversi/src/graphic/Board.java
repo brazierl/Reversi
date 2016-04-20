@@ -64,6 +64,7 @@ public class Board {
     }
 
     private static void displayButtons() {
+        grid.setDisable(!Game.getCurrentPlayer().isHuman());
         int[][] btnMatrix = Move.playableCells(Pawn.toIntMatrix(matrix), Game.getCurrentPlayer());
         int nbPlayableCells = 0;
         for (int y = 0; y < btnMatrix.length; y++) {
@@ -72,9 +73,6 @@ public class Board {
                     nbPlayableCells++;
                 }
             }
-        }
-        if (!Game.getCurrentPlayer().isHuman()) {
-            grid.setDisable(true);
         }
         if (nbPlayableCells == 0 && !isMatrixFull()) {
             Game.swapCurrentPlayer();
@@ -96,7 +94,7 @@ public class Board {
                     String[] s = btn.getId().split("/");
                     int x1 = Integer.parseInt(s[0]);
                     int y1 = Integer.parseInt(s[1]);
-                    moves.add(new Move(x,y,Pawn.toIntMatrix(matrix)));
+                    moves.add(new Move(x, y, Pawn.toIntMatrix(matrix)));
                     matrix = Controller.onClickPawn(matrix, x1, y1);
                     Game.swapCurrentPlayer();
                     refreshDisplay();
@@ -113,7 +111,7 @@ public class Board {
         int[][] btnMatrix = Move.playableCells(Pawn.toIntMatrix(matrix), Game.getCurrentPlayer());
         int[] coordAI = Controller.nextMove(matrix, btnMatrix);
         if (coordAI != null) {
-            moves.add(new Move(coordAI[1], coordAI[0],Pawn.toIntMatrix(matrix)));
+            moves.add(new Move(coordAI[1], coordAI[0], Pawn.toIntMatrix(matrix)));
             matrix = Controller.onClickPawn(matrix, coordAI[1], coordAI[0]);
             grid.setDisable(false);
         }
@@ -128,15 +126,17 @@ public class Board {
     }
 
     public static void displayScores() {
-        scorePlayer1.setText(Game.getPlayer1().getName() + " : " + Game.getPlayer1().getScore());
-        scorePlayer2.setText(Game.getPlayer2().getName() + " : " + Game.getPlayer2().getScore());
+        scorePlayer1.setText(Game.getPlayer1().getName() + " : " + Game.getPlayer1().getScore() + "\n" + (Game.getPlayer1().isHuman() ? "Joueur" : "Ordinateur"));
+        scorePlayer2.setText(Game.getPlayer2().getName() + " : " + Game.getPlayer2().getScore() + "\n" + (Game.getPlayer2().isHuman() ? "Joueur" : "Ordinateur"));
     }
 
     public static void initScores() {
-        scorePlayer1 = new Text(30, 30, Game.getPlayer1().getName() + " : " + Game.getPlayer1().getScore());
-        scorePlayer2 = new Text(100, 15, Game.getPlayer2().getName() + " : " + Game.getPlayer2().getScore());
+        scorePlayer1 = new Text(30, 30, "");
+        scorePlayer2 = new Text(100, 15, "");
         scorePlayer1.setFont(Font.font("Algerian", 40));
+        scorePlayer1.setFill((Colors.BLACK.getNumber() == Game.getPlayer1().getNumber()) ? Colors.BLACK.getGraphicColor() : Colors.WHITE.getGraphicColor());
         scorePlayer2.setFont(Font.font("Algerian", 40));
+        scorePlayer2.setFill((Colors.BLACK.getNumber() == Game.getPlayer2().getNumber()) ? Colors.BLACK.getGraphicColor() : Colors.WHITE.getGraphicColor());
         scorePlayer2.setTextAlignment(TextAlignment.RIGHT);
     }
 
@@ -161,20 +161,17 @@ public class Board {
     }
 
     private static void refreshDisplay() {
+        grid.getChildren().clear();
+        grid.setAlignment(Pos.CENTER);
+        grid.setStyle("-fx-background-color: green; -fx-border-color: rgb(60,40,20); -fx-border-width: 100;");
+        displayCircles();
+        updateScores();
+        displayScores();
+        displayButtons();
         if (isMatrixFull()) {
             displayGameOver();
-        } else {
-            if (!Game.getCurrentPlayer().isHuman()) {
-                playAI();
-            }
-            grid.getChildren().clear();
-            grid.setAlignment(Pos.CENTER);
-            grid.setStyle("-fx-background-color: green;");
-            displayCircles();
-            updateScores();
-            displayScores();
-            displayButtons();
-
+        } else if (!Game.getCurrentPlayer().isHuman()) {
+            playAI();
         }
     }
 

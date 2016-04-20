@@ -73,7 +73,7 @@ public class Move {
                 }
             }
         }
-        if (colId > 2) {
+        if (colId > 1) {
             if (matrix[rowId][colId - 1] != p.getNumber() && matrix[rowId][colId - 1] != 0) {
                 for (int i = colId - 1; i >= 0; i--) {
                     if (matrix[rowId][i] == p.getNumber()) {
@@ -102,7 +102,7 @@ public class Move {
                 }
             }
         }
-        if (rowId > 2) {
+        if (rowId > 1) {
             if (matrix[rowId - 1][colId] != p.getNumber() && matrix[rowId - 1][colId] != 0) {
                 for (int i = rowId - 1; i >= 0; i--) {
                     if (matrix[i][colId] == p.getNumber()) {
@@ -121,7 +121,7 @@ public class Move {
         int id = 0;
         if (rowId < matrix.length - 2 && colId < matrix[rowId].length - 2) {
             if (matrix[rowId + 1][colId + 1] != p.getNumber() && matrix[rowId + 1][colId + 1] != 0) {
-                for (int i = 2; i < Math.min(matrix.length-rowId-1,matrix.length-colId-1); i++) {
+                for (int i = 2; i <= Math.min(matrix.length-rowId-1,matrix.length-colId-1); i++) {
                     if (matrix[rowId + i][colId + i] == p.getNumber()) {
                         return true;
                     }
@@ -133,7 +133,7 @@ public class Move {
         }
         if (rowId > 1 && colId < matrix[rowId].length - 2) {
             if (matrix[rowId - 1][colId + 1] != p.getNumber() && matrix[rowId - 1][colId + 1] != 0) {
-                for (int i = 2; i < Math.min(rowId,matrix.length-colId-1); i++) {
+                for (int i = 2; i <= Math.min(rowId,matrix.length-colId-1); i++) {
                     if (matrix[rowId - i][colId + i] == p.getNumber()) {
                         return true;
                     }
@@ -145,7 +145,7 @@ public class Move {
         }
         if (rowId < matrix.length - 2 && colId > 2) {
             if (matrix[rowId + 1][colId - 1] != p.getNumber() && matrix[rowId + 1][colId - 1] != 0) {
-                for (int i = 2; i < Math.min(matrix.length-rowId-1,colId); i++) {
+                for (int i = 2; i <= Math.min(matrix.length-rowId-1,colId); i++) {
                     if (matrix[rowId + i][colId - i] == p.getNumber()) {
                         return true;
                     }
@@ -157,7 +157,7 @@ public class Move {
         }
         if (rowId > 1 && colId > 1) {
             if (matrix[rowId - 1][colId - 1] != p.getNumber() && matrix[rowId - 1][colId - 1] != 0) {
-                for (int i = 2; i <Math.min(rowId,colId); i++) {
+                for (int i = 2; i <= Math.min(rowId,colId); i++) {
                     if (matrix[rowId - i][colId - i] == p.getNumber()) {
                         return true;
                     }
@@ -204,7 +204,7 @@ public class Move {
                 }
             }
         }
-        if (colId > 2) {
+        if (colId > 1) {
             if (matrix[rowId][colId - 1] != p.getNumber() && matrix[rowId][colId - 1] != 0) {
                 int[][] tmp = getCloneMatrix(resMatrix);
                 for (int i = colId-1; i >= 0; i--) {
@@ -240,7 +240,7 @@ public class Move {
                 }
             }
         }
-        if (rowId > 2) {
+        if (rowId > 1) {
             if (matrix[rowId - 1][colId] != p.getNumber() && matrix[rowId - 1][colId] != 0) {
                 int[][] tmp = getCloneMatrix(resMatrix);
                 for (int i = rowId-1; i >= 0; i--) {
@@ -264,7 +264,7 @@ public class Move {
         if (rowId < matrix.length - 2 && colId < matrix[rowId].length - 2) {
             if (matrix[rowId + 1][colId + 1] != p.getNumber() && matrix[rowId + 1][colId + 1] != 0) {
                 int[][] tmp = getCloneMatrix(resMatrix);
-                for (int i = 1; i < Math.min(matrix.length-rowId-1,matrix.length-colId-1); i++) {
+                for (int i = 1; i <= Math.min(matrix.length-rowId-1,matrix.length-colId-1); i++) {
                     if (matrix[rowId + i][colId + i] == p.getNumber()) {
                         resMatrix = getCloneMatrix(tmp);
                         break;
@@ -279,7 +279,7 @@ public class Move {
         if (rowId > 1 && colId < matrix[rowId].length - 2) {
             if (matrix[rowId - 1][colId + 1] != p.getNumber() && matrix[rowId - 1][colId + 1] != 0) {
                 int[][] tmp = getCloneMatrix(resMatrix);
-                for (int i = 1; i < Math.min(rowId,matrix.length-colId-1); i++) {
+                for (int i = 1; i <= Math.min(rowId,matrix.length-colId-1); i++) {
                     if (matrix[rowId - i][colId + i] == p.getNumber()) {
                         resMatrix = getCloneMatrix(tmp);
                         break;
@@ -294,7 +294,7 @@ public class Move {
         if (rowId < matrix.length - 2 && colId > 1) {
             if (matrix[rowId + 1][colId - 1] != p.getNumber() && matrix[rowId + 1][colId - 1] != 0) {
                 int[][] tmp = getCloneMatrix(resMatrix);
-                for (int i = 1; i < Math.min(matrix.length-rowId-1,colId); i++) {
+                for (int i = 1; i <= Math.min(matrix.length-rowId-1,colId); i++) {
                     if (matrix[rowId + i][colId - i] == p.getNumber()) {
                         resMatrix = getCloneMatrix(tmp);
                         break;
@@ -309,7 +309,7 @@ public class Move {
         if (rowId > 1 && colId > 1) {
             if (matrix[rowId - 1][colId - 1] != p.getNumber() && matrix[rowId - 1][colId - 1] != 0) {
                 int[][] tmp = getCloneMatrix(resMatrix);
-                for (int i = 1; i <Math.min(rowId,colId); i++) {
+                for (int i = 1; i <= Math.min(rowId,colId); i++) {
                     if (matrix[rowId - i][colId - i] == p.getNumber()) {
                         resMatrix = getCloneMatrix(tmp);
                         break;
@@ -362,4 +362,17 @@ public class Move {
         return resMatrix;
     }
 
+    
+    public static boolean hasPlayableCell(int[][] matrix, Player p){
+        int[][] resMatrix = new int[matrix.length][];
+        for (int y = 0; y < matrix.length; y++) {
+            resMatrix[y] = new int[matrix[y].length];
+            for (int x = 0; x < matrix[0].length; x++) {
+                if (matrix[y][x] == 0 && (checkRow(matrix, y, x, p) || checkCol(matrix, y, x, p) || checkDiagonal(matrix, y, x, p)) && matrix[y][x] == 0) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }

@@ -52,6 +52,10 @@ public class Player {
     public boolean isHuman() {
         return human;
     }
+
+    public void setHuman(boolean human) {
+        this.human = human;
+    }
     
     @Override
     public boolean equals(Object obj) {
