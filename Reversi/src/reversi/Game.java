@@ -15,7 +15,6 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 /**
@@ -100,7 +99,13 @@ public class Game extends Application {
         MenuItem diff2 = new MenuItem("Moyen");
         MenuItem diff3 = new MenuItem("Difficile");
         
-        diff1.setStyle("-fx-font-weight:bold;");
+        if(difficulty==1)
+            diff1.setStyle("-fx-font-weight:bold;");
+        if(difficulty==2)
+            diff2.setStyle("-fx-font-weight:bold;");
+        if(difficulty==3)
+            diff3.setStyle("-fx-font-weight:bold;");
+        
         diff1.setOnAction((ActionEvent t) -> {
             difficulty = 1;
             diff1.setStyle("-fx-font-weight:bold;");
@@ -109,14 +114,14 @@ public class Game extends Application {
         });
         
         diff2.setOnAction((ActionEvent t) -> {
-            difficulty = 1;
+            difficulty = 2;
             diff1.setStyle("-fx-font-weight:normal;");
             diff2.setStyle("-fx-font-weight:bold;");
             diff3.setStyle("-fx-font-weight:normal;");
         });
         
         diff3.setOnAction((ActionEvent t) -> {
-            difficulty = 1;
+            difficulty = 3;
             diff1.setStyle("-fx-font-weight:normal;");
             diff2.setStyle("-fx-font-weight:normal;");
             diff3.setStyle("-fx-font-weight:bold;");
