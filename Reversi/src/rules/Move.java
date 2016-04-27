@@ -7,13 +7,16 @@ package rules;
 
 import controller.Player;
 /**
- *
+ * Move class. Represents a move played by a player. Also manage the legal moves and the color of the pawns.
  * @author p1509283
  */
 public class Move {
     
     private int x;
     private int y;
+    /**
+     * The grid before the move was played.
+     */
     private int[][] previousMatrix;
 
     public Move(int x, int y, int[][] previousMatrix) {
@@ -46,6 +49,13 @@ public class Move {
         this.previousMatrix = previousMatrix;
     }
     
+    /**
+     * Return a matrix of the playable cells on a board.
+     * 
+     * @param matrix current grid
+     * @param p current player
+     * @return new matrix where the player can do his next move. 1 if the tile ise playable, 0 otherwise.
+     */
     public static int[][] playableCells(int[][] matrix, Player p) {
         int[][] resMatrix = new int[matrix.length][];
         for (int y = 0; y < matrix.length; y++) {
@@ -59,6 +69,15 @@ public class Move {
         return resMatrix;
     }
 
+    /**
+     * Check if the cell is playable in the row.
+     * 
+     * @param matrix
+     * @param rowId
+     * @param colId
+     * @param p
+     * @return true is it is playable.
+     */
     private static boolean checkRow(int[][] matrix, int rowId, int colId, Player p) {
         int id = 0;
         if (colId < matrix[rowId].length - 2) {
@@ -88,6 +107,15 @@ public class Move {
         return false;
     }
 
+    /**
+     * Check if the cell is playable in the column.
+     * 
+     * @param matrix
+     * @param rowId
+     * @param colId
+     * @param p
+     * @return 
+     */
     private static boolean checkCol(int[][] matrix, int rowId, int colId, Player p) {
         int id = 0;
         if (rowId < matrix.length - 2) {
@@ -117,6 +145,15 @@ public class Move {
         return false;
     }
 
+    /**
+     * Check if the cell is playable in the diagonal.
+     * 
+     * @param matrix
+     * @param rowId
+     * @param colId
+     * @param p
+     * @return 
+     */
     private static boolean checkDiagonal(int[][] matrix, int rowId, int colId, Player p) {
         int id = 0;
         if (rowId < matrix.length - 2 && colId < matrix[rowId].length - 2) {
@@ -170,6 +207,15 @@ public class Move {
         return false;
     }
     
+    /**
+     * Give the new aspect of the board after a move.
+     * 
+     * @param matrix
+     * @param rowId
+     * @param colId
+     * @param p
+     * @return new matrix
+     */
     public static int[][] returnMatrixMove(int[][] matrix, int rowId, int colId,Player p){
         int[][] resMatrix = matrix.clone();
         int[][] resRow = checkRowToReturn(matrix.clone(), rowId, colId, p);
@@ -186,6 +232,15 @@ public class Move {
         return resMatrix;
     }
 
+    /**
+     * Check the row to change the cells.
+     * 
+     * @param matrix
+     * @param rowId
+     * @param colId
+     * @param p
+     * @return new matrix. 1 if the column has changed, 0 otherwise.
+     */
     private static int[][] checkRowToReturn(int[][] matrix, int rowId, int colId, Player p) {
         int id = 0;
         int[][] resMatrix = convertToZeroMatrix(matrix);
@@ -222,6 +277,15 @@ public class Move {
         return resMatrix;
     }
 
+    /**
+     * Check the column to change the cells.
+     * 
+     * @param matrix
+     * @param rowId
+     * @param colId
+     * @param p
+     * @return new matrix. 1 if the column has changed, 0 otherwise.
+     */
     private static int[][] checkColToReturn(int[][] matrix, int rowId, int colId, Player p) {
         int id = 0;
         int[][] resMatrix = convertToZeroMatrix(matrix);
@@ -258,6 +322,15 @@ public class Move {
         return resMatrix;
     }
 
+    /**
+     * Check the diagonal to change the cells.
+     * 
+     * @param matrix
+     * @param rowId
+     * @param colId
+     * @param p
+     * @return new matrix. 1 if the column has changed, 0 otherwise.
+     */
     private static int[][] checkDiagonalToReturn(int[][] matrix, int rowId, int colId, Player p) {
         int id = 0;
         int[][] resMatrix = convertToZeroMatrix(matrix);
@@ -324,6 +397,11 @@ public class Move {
         return resMatrix;
     }
         
+    /**
+     * Get the scores of each play the board
+     * @param matrix to check
+     * @return int array. First element is player 1's score, second element is player 2's score.
+     */
     public static int[] getScores(int[][] matrix) {
         int score1 = 0;
         int score2 = 0;
@@ -343,6 +421,11 @@ public class Move {
         return scores;
     }
     
+    /**
+     * Give an empty matrix depending of the one in parameter.
+     * @param matrix
+     * @return empty matrix
+     */
     private static int[][] convertToZeroMatrix(int[][] matrix){
         int[][] resMatrix = matrix.clone();
         for (int y = 0; y < resMatrix.length; y++) {
@@ -354,6 +437,12 @@ public class Move {
         return resMatrix;
     }
     
+    /**
+     * Clone the matrix in parameter.
+     * 
+     * @param matrix
+     * @return new matrix.
+     */
     private static int[][] getCloneMatrix(int[][] matrix){
         int[][] resMatrix = matrix.clone();
         for (int y = 0; y < resMatrix.length; y++) {
@@ -362,7 +451,13 @@ public class Move {
         return resMatrix;
     }
 
-    
+    /**
+     * Check if the matrix has playable cell for the player.
+     * 
+     * @param matrix
+     * @param p
+     * @return false if no playable cell.
+     */
     public static boolean hasPlayableCell(int[][] matrix, Player p){
         int[][] resMatrix = new int[matrix.length][];
         for (int y = 0; y < matrix.length; y++) {

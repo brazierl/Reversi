@@ -11,7 +11,7 @@ import javafx.scene.shape.Circle;
 import reversi.Game;
 
 /**
- *
+ * Pawn class. Represents a pawn on the board.
  * @author p1509283
  */
 public class Pawn {
@@ -44,6 +44,11 @@ public class Pawn {
         this.circle = circle;
     }
     
+    /**
+     * Convert a Pawn matrix to an int matrix to be used in the move class.
+     * @param matrix
+     * @return 
+     */
     public static int[][] toIntMatrix(Pawn[][] matrix) {
         int[][] playerMatrix = new int[matrix.length][];
         for (int y = 0; y < matrix.length; y++) {
@@ -59,6 +64,11 @@ public class Pawn {
         return playerMatrix;
     }
 
+    /**
+     * Convert an int matrix to a Pawn matrix to be used in the Board class.
+     * @param matrix
+     * @return 
+     */
     public static Pawn[][] toMatrix(int[][] matrix) {
         Pawn[][] playerMatrix = new Pawn[matrix.length][];
         for (int y = 0; y < matrix.length; y++) {

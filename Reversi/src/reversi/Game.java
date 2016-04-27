@@ -40,7 +40,12 @@ public class Game extends Application {
             currentPlayer = player1;
         }
     }
-    
+    /**
+     * Basic display of the scene.
+     * 
+     * @param primaryStage
+     * @param root 
+     */
     private void initScene(Stage primaryStage, StackPane root) {
         int padding = 20;
         double scoreHeightFactor = 1.4;
@@ -54,6 +59,11 @@ public class Game extends Application {
         primaryStage.show();
     }
     
+    /**
+     * Initialize the graphic component to display the scores.
+     * 
+     * @param root 
+     */
     private void initScores(StackPane root) {
         StackPane childTScore1 = new StackPane();
         StackPane childTScore2 = new StackPane();
@@ -69,6 +79,12 @@ public class Game extends Application {
         root.getChildren().add(childTScore2);
     }
     
+    /**
+     * Initialize the menu in the game.
+     * 
+     * @param primaryStage
+     * @param root 
+     */
     private void initMenu(Stage primaryStage, StackPane root) {
         MenuBar menuBar = new MenuBar();
         Menu menuFile = new Menu("Fichier");
@@ -137,6 +153,11 @@ public class Game extends Application {
         root.getChildren().addAll(menuBar);
     }
     
+    /**
+     * Initialize the game.
+     * 
+     * @param primaryStage 
+     */
     private void initGame(Stage primaryStage) {
         StackPane root = new StackPane();
         
@@ -185,6 +206,11 @@ public class Game extends Application {
         Game.currentPlayer = currentPlayer;
     }
     
+    /**
+     * Return a player associated with the number. (default value is 2)
+     * @param n player number
+     * @return Player
+     */
     public static Player getPlayerByNumber(int n) {
         switch (n) {
             case 1:

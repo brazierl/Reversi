@@ -7,8 +7,6 @@ package graphic;
 
 import controller.Controller;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.event.*;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -20,17 +18,37 @@ import reversi.Game;
 import rules.Move;
 
 /**
- *
+ * Board class. Represent the Board as an object.
  * @author p1509283
  */
 public class Board {
-
+    /**
+     * Graphical component of the board
+     */
     private static GridPane grid;
+    /**
+     * Graphical components of the score of player 1
+     */
     private static Text scorePlayer1;
+    /**
+     * Graphical components of the score of player 2
+     */
     private static Text scorePlayer2;
+    /**
+     * Matrix of the pawn on the board (null is no pawn).
+     */
     private static Pawn[][] matrix;
+    /**
+     * List of the moves that have been played.
+     */
     private static ArrayList<Move> moves = new ArrayList<>();
 
+    /**
+     * Board initialization 
+     * 
+     * @param X_SIZE Number of horizontal tiles 
+     * @param Y_SIZE Number of vertical tiles
+     */
     public static void initBoard(int X_SIZE, int Y_SIZE) {
         grid = new GridPane();
         matrix = new Pawn[Y_SIZE][];
@@ -48,6 +66,9 @@ public class Board {
         refreshDisplay();
     }
 
+    /**
+     * Display the circle on the grid depending on the matrix of pawn
+     */
     private static void displayCircles() {
         for (int y = 0; y < matrix.length; y++) {
             for (int x = 0; x < matrix[y].length; x++) {
@@ -63,6 +84,9 @@ public class Board {
         }
     }
 
+    /**
+     * Display the buttons where there are legal moves
+     */
     private static void displayButtons() {
         grid.setDisable(!Game.getCurrentPlayer().isHuman());
         int[][] btnMatrix = Move.playableCells(Pawn.toIntMatrix(matrix), Game.getCurrentPlayer());
@@ -80,6 +104,14 @@ public class Board {
         }
     }
 
+    /**
+     * Display a button
+     * 
+     * @param y position
+     * @param x position
+     * @param cell value. 1 if there is a playable cell, 0 otherwise
+     * @return 
+     */
     private static boolean displayButton(int y, int x, int cell) {
         Button btn = new Button();
         boolean ans = false;
@@ -107,6 +139,9 @@ public class Board {
         return ans;
     }
 
+    /**
+     * Method called when an AI has to play
+     */
     private static void playAI() {
         int[][] btnMatrix = Move.playableCells(Pawn.toIntMatrix(matrix), Game.getCurrentPlayer());
         int[] coordAI = Controller.nextMove(matrix, btnMatrix);
@@ -118,7 +153,7 @@ public class Board {
         Game.swapCurrentPlayer();
         refreshDisplay();
     }
-
+    
     private static void updateScores() {
         int[] checkScores = Move.getScores(Pawn.toIntMatrix(matrix));
         Game.getPlayer1().setScore(checkScores[0]);
@@ -130,6 +165,9 @@ public class Board {
         scorePlayer2.setText(Game.getPlayer2().getName() + " : " + Game.getPlayer2().getScore() + "\n" + (Game.getPlayer2().isHuman() ? "Joueur" : "Ordinateur"));
     }
 
+    /**
+     * Initialize the scores at the beginning of the game.
+     */
     public static void initScores() {
         scorePlayer1 = new Text(30, 30, "");
         scorePlayer2 = new Text(100, 15, "");
@@ -160,6 +198,9 @@ public class Board {
         Board.matrix = matrix;
     }
 
+    /**
+     * Main method that is called on each event. Maintain the visual aspect of the game.
+     */
     private static void refreshDisplay() {
         grid.getChildren().clear();
         grid.setAlignment(Pos.CENTER);
@@ -175,6 +216,10 @@ public class Board {
         }
     }
 
+    /**
+     * Test if the game is over
+     * @return true if game over, false otherwise
+     */
     private static boolean isMatrixFull() {
         for (Pawn[] matrix1 : matrix) {
             for (Pawn item : matrix1) {

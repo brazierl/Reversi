@@ -9,7 +9,7 @@ package controller;
 import java.util.Objects;
 
 /**
- *
+ * Player class 
  * @author p1509283
  */
 public class Player {

@@ -9,7 +9,7 @@ package graphic;
 import javafx.scene.paint.Color;
 
 /**
- *
+ * Enum to manage the color of the Pawn
  * @author p1509283
  */
 public enum Colors {
