@@ -49,7 +49,7 @@ public class Controller {
                     return coords.get((int) Math.round(Math.random() * (coords.size() - 1)));
                 case 2:
                     //p = miniMax(matrix, coords, 4, Game.getCurrentPlayer());
-                    p = negaMax(matrix, coords, 5, Game.getCurrentPlayer(), Double.MIN_VALUE, Double.MAX_VALUE);
+                    p = negaMax(matrix, coords, 3, Game.getCurrentPlayer(), Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
                     if (p.getValue() != null) {
                         return new int[]{p.getValue().getY(), p.getValue().getX()};
                     } else {
@@ -58,7 +58,7 @@ public class Controller {
 
                 case 3:
                     //p = miniMax(matrix, coords, 6, Game.getCurrentPlayer());
-                    p = negaMax(matrix, coords, 7, Game.getCurrentPlayer(), Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
+                    p = negaMax(matrix, coords, 5, Game.getCurrentPlayer(), Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
                     if (p.getValue() != null) {
                         return new int[]{p.getValue().getY(), p.getValue().getX()};
                     } else {
@@ -127,9 +127,7 @@ public class Controller {
      * with the eval function)
      */
     public static Pair<Double, Move> negaMax(Pawn[][] matrix, ArrayList<int[]> coords, int depth, Player player, double alpha, double beta) {
-        if(coords.isEmpty()){
-            return new Pair((double)1, null);
-        }
+        Player secondPlayer = player.equals(Game.getPlayer1()) ? Game.getPlayer2() : Game.getPlayer1();
         if (isMatrixFull(matrix) || depth <= 0) {
             return new Pair(eval(Pawn.toIntMatrix(matrix), player), null);
         }
@@ -138,8 +136,8 @@ public class Controller {
         for (int[] coord : coords) {
             tmp = onClickPawn(matrix, coord[1], coord[0]);
             ArrayList<int[]> c = toCoords(Move.playableCells(Pawn.toIntMatrix(tmp), player));
-            Pair<Double, Move> p = negaMax(tmp, c, depth - 1, player, -beta, -alpha);
-            Double score = -p.getKey();
+            Pair<Double, Move> p = negaMax(tmp, c, depth - 1, secondPlayer, -beta, -alpha);
+            Double score = p.getKey();
             if (score >= alpha) {
                 alpha = score;
                 bestMove = new Move(coord[1], coord[0], Pawn.toIntMatrix(matrix));
@@ -212,7 +210,7 @@ public class Controller {
     }
 
      /**
-     * Use to know the score of a player on a grid.
+     * Use to know the number of played cells.
      *
      * @param matrix the grid
      * @param p the player
@@ -304,43 +302,45 @@ public class Controller {
         */
         
         
-        
+        // Initialize all the vars we need into the Method
         Player otherP = currentP.equals(Game.getPlayer1()) ? Game.getPlayer2() : Game.getPlayer1();
-        int my_cells = 0, opp_cells = 0, x, y, k, my_front_cells = 0, opp_front_cells = 0, i, j;
-        double p = 0, c = 0, l = 0, m = 0, f = 0, d = 0;
+        int my_cells = 0, opp_cells = 0, x, y, k, my_vulnerable_cells = 0, opp_vulnerable_cells = 0, i, j;
+        double totalCells = 0, totalCorners = 0, totalBorderCorners = 0, totalScore = 0, totalVulnerableCells = 0, totalCoeffMatrix = 0;
 
         int X1[] = {-1, -1, 0, 1, 1, 1, 0, -1};
         int Y1[] = {0, 1, 1, 1, 0, -1, -1, -1};
         int[][] V = new int[8][];
 
-        V[0] = new int[]{20, -3, 11, 8, 8, 11, -3, 20};
-        V[1] = new int[]{-3, -7, -4, 1, 1, -4, -7, -3};
-        V[2] = new int[]{11, -4, 2, 2, 2, 2, -4, 11};
-        V[3] = new int[]{8, 1, 2, -3, -3, 2, 1, 8};
-        V[4] = new int[]{8, 1, 2, -3, -3, 2, 1, 8};
-        V[5] = new int[]{11, -4, 2, 2, 2, 2, -4, 11};
-        V[6] = new int[]{-3, -7, -4, 1, 1, -4, -7, -3};
-        V[7] = new int[]{20, -3, 11, 8, 8, 11, -3, 20};
+        // Ponderate matrix to evaluate the best matrix state
+        V[0] = new int[]{20, -10, 10, 10, 10, 10, -10, 20};
+        V[1] = new int[]{-10, -10, -5, 1, 1, -5, -10, -10};
+        V[2] = new int[]{10, -5, 2, 2, 2, 2, -5, 10};
+        V[3] = new int[]{10, 1, 2, 1, 1, 2, 1, 10};
+        V[4] = new int[]{10, 1, 2, 1, 1, 2, 1, 10};
+        V[5] = new int[]{10, -5, 2, 2, 2, 2, -5, 10};
+        V[6] = new int[]{-10, -10, -5, 1, 1, -5, -10, -10};
+        V[7] = new int[]{20, -10, 10, 10, 10, 10, -10, 20};
 
-// Piece difference, frontier disks and disk squares
+        // Calculate the ponderate matrix state
         for (y = 0; y < 8; y++) {
             for (x = 0; x < 8; x++) {
                 if (grid[y][x] == currentP.getNumber()) {
-                    d += V[y][x];
+                    totalCoeffMatrix += V[y][x];
                     my_cells++;
                 } else if (grid[y][x] == otherP.getNumber()) {
-                    d -= V[y][x];
+                    totalCoeffMatrix -= V[y][x];
                     opp_cells++;
                 }
+                // Calculate all the vulnerable cells 
                 if (grid[y][x] != 0) {
                     for (k = 0; k < 8; k++) {
                         j = y + Y1[k];
                         i = x + X1[k];
                         if (j >= 0 && j < 8 && i >= 0 && i < 8 && grid[j][i] == 0) {
                             if (grid[y][x] == currentP.getNumber()) {
-                                my_front_cells++;
+                                my_vulnerable_cells++;
                             } else {
-                                opp_front_cells++;
+                                opp_vulnerable_cells++;
                             }
                             break;
                         }
@@ -348,22 +348,25 @@ public class Controller {
                 }
             }
         }
+        
+        // Calculate the percentage of cells taken by each players
         if (my_cells > opp_cells) {
-            p = (100.0 * my_cells) / (my_cells + opp_cells);
+            totalCells = (100.0 * my_cells) / (my_cells + opp_cells);
         } else if (my_cells < opp_cells) {
-            p = -(100.0 * opp_cells) / (my_cells + opp_cells);
+            totalCells = -(100.0 * opp_cells) / (my_cells + opp_cells);
         } else {
-            p = 0;
+            totalCells = 0;
         }
 
-        if (my_front_cells > opp_front_cells) {
-            f = -(100.0 * my_front_cells) / (my_front_cells + opp_front_cells);
-        } else if (my_front_cells < opp_front_cells) {
-            f = (100.0 * opp_front_cells) / (my_front_cells + opp_front_cells);
+        if (my_vulnerable_cells > opp_vulnerable_cells) {
+            totalVulnerableCells = -(100.0 * my_vulnerable_cells) / (my_vulnerable_cells + opp_vulnerable_cells);
+        } else if (my_vulnerable_cells < opp_vulnerable_cells) {
+            totalVulnerableCells = (100.0 * opp_vulnerable_cells) / (my_vulnerable_cells + opp_vulnerable_cells);
         } else {
-            f = 0;
+            totalVulnerableCells = 0;
         }
-// Corner occupancy
+        
+        // Corner occupancy
         my_cells = opp_cells = 0;
         if (grid[0][0] == currentP.getNumber()) {
             my_cells++;
@@ -385,9 +388,9 @@ public class Controller {
         } else if (grid[7][7] == otherP.getNumber()) {
             opp_cells++;
         }
-        c = 25 * (my_cells - opp_cells);
+        totalCorners = my_cells - opp_cells;
         
-// Corner closeness
+        // Corner closeness with near cells
         my_cells = opp_cells = 0;
         if (grid[0][0] == 0) {
             if (grid[0][1] == currentP.getNumber()) {
@@ -457,21 +460,21 @@ public class Controller {
                 opp_cells++;
             }
         }
-        l = -12.5 * (my_cells - opp_cells);
+        totalBorderCorners = -1 *(my_cells - opp_cells);
 
-// Mobility
+        // Mobility (A REVOIR !)
         my_cells = getScore(Pawn.toMatrix(grid), currentP);
         opp_cells = getScore(Pawn.toMatrix(grid), otherP);
         if (my_cells > opp_cells) {
-            m = (100.0 * my_cells) / (my_cells + opp_cells);
+            totalScore = (100.0 * my_cells) / (my_cells + opp_cells);
         } else if (my_cells < opp_cells) {
-            m = -(100.0 * opp_cells) / (my_cells + opp_cells);
+            totalScore = -(100.0 * opp_cells) / (my_cells + opp_cells);
         } else {
-            m = 0;
+            totalScore = 0;
         }
          
-// final weighted score
-        double score = (10 * p) + (801.724 * c) + (382.026 * l) + (78.922 * m) + (74.396 * f) + (10 * d);
+        // final ponderated score
+        double score = (10 * totalCells) + (1000 * totalCorners) + (250 * totalBorderCorners) + (100 * totalScore) + (100 * totalVulnerableCells) + (20 * totalCoeffMatrix);
         return score;
         
     }
